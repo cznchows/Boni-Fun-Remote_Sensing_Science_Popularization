@@ -1,1 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>波妮鼠冒险:梧桐林的咳嗽</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .sensor-ball {
+            width: 30px;
+            height: 30px;
+            background: #ff4444;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 10px;
+            animation: pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .game-content {
+            padding: 40px;
+        }
+
+        .story-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f0f4ff;
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .choice-btn {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .choice-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .choice-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .choice-btn:hover .choice-number {
+            background: white;
+            color: #667eea;
+        }
+
+        .quiz-container {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .result {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .result.failure {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .ending {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .title-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #333;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .restart-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .restart-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .sound-effect {
+            font-style: italic;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="sensor-ball"></div>
+            <h1 class="title">波妮鼠的遥感冒险</h1>
+            <p class="subtitle">第一章:梧桐林的咳嗽</p>
+        </div>
+
+        <div class="game-content">
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">当前章节</div>
+                    <div class="stat-value" id="round">1/7</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">知识分数</div>
+                    <div class="stat-value" id="score">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">决策类型</div>
+                    <div class="stat-value" id="decisionType">均衡</div>
+                </div>
+            </div>
+
+            <div class="story-box" id="story"></div>
+            <div id="quiz-area"></div>
+            <div class="choices" id="choices"></div>
+        </div>
+    </div>
+
+    <script>
+        const gameState = {
+            round: 1,
+            score: 0,
+            cautiousCount: 0,
+            boldCount: 0,
+            knowledgeCorrect: 0,
+            playerChoices: []
+        };
+
+        const story = {
+            1: {
+                text: `午后的阳光洒在校园里,你抱着一摞<遥感原理>课本经过梧桐林。突然——<span class="sound-effect">"嘀嘀!嘀嘀!"</span> 你头顶的多谱段传感球开始急促闪烁,红光像心跳一样跳动着。\n\n你停下脚步,本能地举起右手调整感应器。数据流在视野中展开:这片梧桐林的植被指数异常偏低,叶绿素反射率下降了23%。\n\n"咳咳……"一阵微弱的声音传来,仿佛树叶在低声呻吟。你抬头望去,原本郁郁葱葱的树冠,如今有些叶片泛黄,边缘卷曲。\n\n作为一名遥感研究生,你知道这不是普通的季节性变化。梧桐林在向你求救!`,
+                choices: [
+                    { text: "立即用便携式光谱仪现场采集数据", type: "bold" },
+                    { text: "先回实验室调取历史卫星影像对比分析", type: "cautious" },
+                    { text: "找园林管理员了解近期情况", type: "balanced" }
+                ]
+            },
+            2: {
+                text: (choice) => {
+                    if (choice === 0) return `你从背包里掏出便携式光谱仪,蹲在一棵病态的梧桐树前。<span class="sound-effect">"嗡嗡……"</span>仪器开始工作,红外、可见光、近红外波段的反射率曲线在屏幕上跳动。\n\n你的领带因为蹲姿有点歪了,但你顾不上整理。头顶的传感球随着数据流入闪烁得更快。\n\n突然,你注意到了异常:"红边位置明显蓝移!这是植物受到胁迫的典型特征……"你皱起眉头,小声嘀咕着。`;
+                    if (choice === 1) return `你快步跑回实验室,双手在键盘上飞舞。<span class="sound-effect">"哒哒哒……"</span>调出了过去三个月的Sentinel-2卫星影像。\n\n屏幕上,NDVI时间序列图呈现出令人担忧的下降趋势。你调整了一下歪掉的领带,头顶的传感球映照在显示器上,投下红色的光斑。\n\n"从8月开始就有异常……这不是突发事件,是持续性的环境压力!"你推了推鼻梁上并不存在的眼镜——这是你紧张时的小动作。`;
+                    return `你找到了园林部的张师傅,一位在学校工作了二十年的老员工。他正在给花坛浇水。\n\n"张师傅,梧桐林最近是不是有什么问题?"\n\n张师傅放下水管,叹了口气:"小波妮啊,你也看出来了?这个月树叶一直不对劲,我也说不上来哪里怪。不过……"他指了指不远处正在施工的新教学楼,"那边工地最近在打桩,震动挺大的。"`;
+                }
+            },
+            3: {
+                quiz: true,
+                quizData: {
+                    question: "你需要判断植被健康状况。在多光谱遥感中,哪个植被指数最适合监测植被生长状态和叶绿素含量?",
+                    options: [
+                        "NDVI (归一化植被指数)",
+                        "NDWI (归一化水体指数)", 
+                        "NDBI (归一化建筑指数)",
+                        "BSI (裸土指数)"
+                    ],
+                    correct: 0,
+                    explanation: "NDVI利用近红外和红光波段的反射率差异,能有效反映植被的生长状况和叶绿素含量。健康植被在近红外波段反射率高、红光波段反射率低,NDVI值接近1;而受损植被NDVI值会明显降低。"
+                },
+                text: `你决定进行系统性的遥感分析。打开笔记本电脑,开始处理多光谱数据。头顶的传感球<span class="sound-effect">"嘀嘀"</span>两声,似乎在催促你。\n\n但在计算植被指数之前,你需要选择正确的指标……`
+            },
+            4: {
+                text: (quizResult) => {
+                    if (quizResult) {
+                        return `<span class="sound-effect">"叮!"</span> 你的传感球发出了愉悦的绿光——答对了!\n\n你迅速计算了整片林区的NDVI值。结果显示:健康区域NDVI在0.7-0.8之间,而靠近新教学楼施工区域的树木NDVI已经跌至0.4-0.5。\n\n"果然有问题!"你兴奋地站起来,差点打翻桌上的咖啡。通过热红外波段分析,你还发现异常区域的地表温度比正常区域高出2-3℃。\n\n现在有三条线索:\n1. 施工区域附近的植被受损最严重\n2. 地表温度异常升高\n3. 问题从两个月前就开始了`;
+                    } else {
+                        return `你的传感球<span class="sound-effect">"嘀嘀嘀"</span>连续三声——选错了!它用快速闪烁提醒你重新思考。\n\n虽然走了点弯路,但你最终还是用NDVI进行了分析。数据显示:健康区域NDVI在0.7-0.8,而施工区附近跌至0.4-0.5。\n\n"看来我还是太紧张了……"你小声嘀咕着,整理了一下领带。不过好在数据不会骗人,异常区域已经锁定了。`;
+                    }
+                },
+                choices: [
+                    { text: "去施工现场实地勘察,寻找直接证据", type: "bold" },
+                    { text: "用无人机搭载多光谱相机做精细化扫描", type: "cautious" },
+                    { text: "先建立数值模型模拟可能的影响因素", type: "balanced" }
+                ]
+            },
+            5: {
+                text: (choice) => {
+                    if (choice === 0) return `你戴上安全帽,走进了施工区域。工人们正在操作大型打桩机,<span class="sound-effect">"轰隆轰隆"</span>的声音震得你的传感球都跟着颤动。\n\n你蹲下身,用手触摸地面——明显感觉到震动。更重要的是,你在施工区边缘发现了一个细节:几根粗大的梧桐树根部暴露在外,表面有明显的机械损伤痕迹!\n\n"震动压实了土壤,根系受损无法正常呼吸和吸水……"你恍然大悟。`;
+                    if (choice === 1) return `第二天清晨,你操控着实验室的多光谱无人机起飞。<span class="sound-effect">"嗡嗡嗡——"</span>它在梧桐林上方30米处盘旋,每秒传回高分辨率的多波段影像。\n\n你的传感球兴奋地闪烁着,似乎在和无人机的传感器共鸣。屏幕上,假彩色合成影像清晰显示:受损区域呈现出明显的褐红色,并且损伤程度与到施工区的距离呈正相关!\n\n"土壤压实和根系损伤导致的水分胁迫!"数据不会说谎。`;
+                    return `你打开ENVI软件,开始建模。输入变量包括:土壤湿度、施工震动强度、树木年龄、根系分布……你的小爪子在键盘上跳跃着。\n\n经过三个小时的计算,模型结果出来了:施工导致的土壤压实使根系区域孔隙度下降了40%,严重影响了根系呼吸和水分吸收。\n\n"理论和实际完美吻合!"你松了一口气,传感球也温柔地闪烁着。`;
+                }
+            },
+            6: {
+                text: `你把分析结果整理成一份专业报告,包括:\n\n📊 NDVI时序变化图表\n🌡️ 地表温度异常分布图\n📷 高分辨率植被健康状况影像\n📝 原因分析与解决建议\n\n现在,你需要决定如何推动问题解决:`,
+                choices: [
+                    { text: "直接向校领导汇报,要求立即停工整改", type: "bold" },
+                    { text: "先联系园林部和施工方,提供技术指导方案", type: "cautious" },
+                    { text: "在学校论坛发帖引起关注,同时报告给相关部门", type: "balanced" }
+                ]
+            },
+            7: {
+                ending: true
+            }
+        };
+
+        function updateStats() {
+            document.getElementById('round').textContent = `${gameState.round}/7`;
+            document.getElementById('score').textContent = gameState.score;
+            
+            let type = "均衡";
+            if (gameState.cautiousCount > gameState.boldCount + 1) type = "谨慎";
+            else if (gameState.boldCount > gameState.cautiousCount + 1) type = "果敢";
+            document.getElementById('decisionType').textContent = type;
+        }
+
+        function showStory(roundNum) {
+            const storyBox = document.getElementById('story');
+            const choicesDiv = document.getElementById('choices');
+            const quizArea = document.getElementById('quiz-area');
+            
+            quizArea.innerHTML = '';
+            choicesDiv.innerHTML = '';
+
+            const currentStory = story[roundNum];
+
+            if (currentStory.ending) {
+                showEnding();
+                return;
+            }
+
+            if (typeof currentStory.text === 'function') {
+                const lastChoice = gameState.playerChoices[gameState.playerChoices.length - 1];
+                storyBox.innerHTML = currentStory.text(lastChoice);
+            } else {
+                storyBox.innerHTML = currentStory.text;
+            }
+
+            if (currentStory.quiz) {
+                showQuiz(currentStory.quizData);
+            } else if (currentStory.choices) {
+                showChoices(currentStory.choices);
+            }
+        }
+
+        function showQuiz(quizData) {
+            const quizArea = document.getElementById('quiz-area');
+            const quizHtml = `
+                <div class="quiz-container">
+                    <div class="quiz-title">🎓 知识检测点</div>
+                    <div class="quiz-question">${quizData.question}</div>
+                    <div class="choices" id="quiz-choices"></div>
+                </div>
+            `;
+            quizArea.innerHTML = quizHtml;
+
+            const quizChoicesDiv = document.getElementById('quiz-choices');
+            quizData.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerHTML = `<span class="choice-number">${String.fromCharCode(65 + index)}</span>${option}`;
+                btn.onclick = () => answerQuiz(index, quizData);
+                quizChoicesDiv.appendChild(btn);
+            });
+        }
+
+        function answerQuiz(answer, quizData) {
+            const quizArea = document.getElementById('quiz-area');
+            const isCorrect = answer === quizData.correct;
+            
+            if (isCorrect) {
+                gameState.score += 20;
+                gameState.knowledgeCorrect++;
+                quizArea.innerHTML = `
+                    <div class="result success">
+                        ✅ 回答正确!传感球发出了愉悦的绿光~<br>
+                        <small>${quizData.explanation}</small>
+                    </div>
+                `;
+            } else {
+                gameState.score += 5;
+                quizArea.innerHTML = `
+                    <div class="result failure">
+                        ❌ 答案不对哦!传感球焦急地闪烁着……<br>
+                        <small>正确答案是:${quizData.options[quizData.correct]}<br>
+                        ${quizData.explanation}</small>
+                    </div>
+                `;
+            }
+
+            updateStats();
+
+            setTimeout(() => {
+                gameState.round++;
+                gameState.playerChoices.push(isCorrect);
+                showStory(gameState.round);
+            }, 3000);
+        }
+
+        function showChoices(choices) {
+            const choicesDiv = document.getElementById('choices');
+            choices.forEach((choice, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerHTML = `<span class="choice-number">${index + 1}</span>${choice.text}`;
+                btn.onclick = () => makeChoice(index, choice.type);
+                choicesDiv.appendChild(btn);
+            });
+        }
+
+        function makeChoice(choiceIndex, type) {
+            if (type === 'cautious') gameState.cautiousCount++;
+            if (type === 'bold') gameState.boldCount++;
+            
+            gameState.playerChoices.push(choiceIndex);
+            gameState.round++;
+            updateStats();
+            showStory(gameState.round);
+        }
+
+        function showEnding() {
+            const storyBox = document.getElementById('story');
+            const choicesDiv = document.getElementById('choices');
+            
+            let endingText = "";
+            let title = "";
+            let description = "";
+
+            const lastChoice = gameState.playerChoices[gameState.playerChoices.length - 1];
+
+            if (lastChoice === 0) {
+                endingText = `一周后,校领导紧急叫停了施工,并要求施工方采取补救措施。工人们在你的指导下,对压实的土壤进行了松土透气处理,增设了树根保护围挡。\n\n两个月后,你再次用无人机扫描梧桐林。NDVI值回升到0.65,树叶重新泛起了生机。<span class="sound-effect">"嘀!"</span>你的传感球发出一声清脆的提示音,仿佛在说:"任务完成!"`;
+                title = "果敢的守护者";
+                description = "你用专业知识和果断行动,及时拯救了梧桐林。虽然过程有些波折,但你的勇气和责任感让校园重回生机!";
+            } else if (lastChoice === 1) {
+                endingText = `在你的技术指导下,施工方调整了打桩方案,增加了减震措施。园林部也开始对受损树木进行专业养护。\n\n整个过程温和而高效。三个月后,梧桐林的NDVI值稳步回升,树木逐渐恢复健康。<span class="sound-effect">"嘀~"</span>你的传感球满意地闪烁着柔和的光。`;
+                title = "智慧的协调者";
+                description = "你用科学的方法和温和的沟通,在各方之间架起了桥梁。专业、谨慎,又充满人情味,这就是最好的研究者风范!";
+            } else {
+                endingText = `你的帖子在校园论坛引起热议,学生们纷纷转发关注。在舆论和专业数据的双重推动下,学校快速响应,成立了"校园生态监测小组",你成为了技术顾问。\n\n现在,每棵树的健康都被实时监测着。<span class="sound-effect">"嘀嘀!"</span>你的传感球骄傲地闪烁——它知道,主人做得很棒!`;
+                title = "平衡的引领者";
+                description = "你既有专业能力,又懂得如何发动群众力量。在科学与社会责任之间找到了完美平衡,真正的学者风范!";
+            }
+
+            const knowledgeBonus = gameState.knowledgeCorrect > 0 ? "🏆 你在知识测试中表现出色!" : "📚 下次要更加注重理论学习哦!";
+
+            storyBox.innerHTML = `
+                <div class="ending">
+                    <h2>🎬 结局</h2>
+                    <p style="line-height: 1.8; margin: 20px 0;">${endingText}</p>
+                    <div class="title-badge">🎖️ ${title}</div>
+                    <p style="color: #666; margin: 20px 0;">${description}</p>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <strong>最终评分</strong><br>
+                        知识分数:${gameState.score}/100<br>
+                        决策风格:${gameState.cautiousCount > gameState.boldCount ? '谨慎型' : gameState.boldCount > gameState.cautiousCount ? '果敢型' : '平衡型'}<br>
+                        ${knowledgeBonus}
+                    </div>
+                    <button class="restart-btn" onclick="location.reload()">🔄 重新开始冒险</button>
+                </div>
+            `;
+            
+            choicesDiv.innerHTML = '';
+        }
+
+        showStory(1);
+        updateStats();
+    </script>
+</body>
+</html>
